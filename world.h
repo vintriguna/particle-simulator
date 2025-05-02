@@ -64,6 +64,8 @@ public:
         }
     }
 
+    void render();
+
     ~World()
     {
 

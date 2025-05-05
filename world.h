@@ -65,6 +65,7 @@ public:
     }
 
     void render();
+    void placeParticle(int y, int x, Particle *particle);
 
     ~World()
     {

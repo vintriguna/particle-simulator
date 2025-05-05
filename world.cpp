@@ -1,6 +1,7 @@
 #include "world.h"
 #include <ncurses.h>
 
+// Render the World's grid
 void World::render()
 {
     clear();
@@ -14,4 +15,10 @@ void World::render()
         }
     }
     refresh();
+}
+
+// Place a particle on the World's grid at the specified coordinates
+void World::placeParticle(int y, int x, Particle *particle)
+{
+    grid.at(y).at(x) = particle;
 }

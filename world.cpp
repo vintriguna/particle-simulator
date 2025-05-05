@@ -14,6 +14,7 @@ void World::render()
             printw("%c", curSymbol);
         }
     }
+    mvprintw(yDim + 2, 0, "BRUSH SIZE: %d", brushSize);
     refresh();
 }
 
@@ -21,4 +22,11 @@ void World::render()
 void World::placeParticle(int y, int x, Particle *particle)
 {
     grid.at(y).at(x) = particle;
+}
+
+// Change the size of the brush
+void World::setBrushSize(int size)
+{
+    int newSize = size - '0';
+    brushSize = newSize;
 }

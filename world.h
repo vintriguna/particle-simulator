@@ -11,12 +11,14 @@ class World
 public:
     int xDim;
     int yDim;
+    int brushSize;
     std::vector<std::vector<Particle *>> grid;
 
     World(int xDim, int yDim)
     {
         this->xDim = xDim;
         this->yDim = yDim;
+        this->brushSize = 1;
 
         // fill grid with empty chars
         for (int i = 0; i < yDim; i++)
@@ -66,6 +68,7 @@ public:
 
     void render();
     void placeParticle(int y, int x, Particle *particle);
+    void setBrushSize(int size);
 
     ~World()
     {

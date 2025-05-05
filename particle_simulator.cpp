@@ -18,14 +18,10 @@ void handleMouseClick(World *world)
 
         if ((event.bstate & BUTTON1_PRESSED) || (event.bstate & BUTTON1_CLICKED))
         {
-            if ((x >= 0 && x < world->xDim) && (y >= 0 && y < world->yDim))
-            {
-
-                Particle *curParticle = new Particle();
-                curParticle->symbol = '*';
-                delete world->grid.at(y).at(x);
-                world->placeParticle(y, x, curParticle);
-            }
+            Particle *newParticle = new Particle();
+            newParticle->symbol = '*';
+            world->placeParticle(y, x, newParticle);
+            delete newParticle;
         }
     }
 }

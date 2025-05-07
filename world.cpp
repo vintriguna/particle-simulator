@@ -29,7 +29,14 @@ void World::placeParticle(int y, int x, Particle *prototype)
 
             int ny = y + i;
             int nx = x + j;
-            if ((nx >= 0 && nx < xDim) && (ny >= 0 && ny < yDim))
+            bool fitsInGrid = (nx >= 0 && nx < xDim) && (ny >= 0 && ny < yDim);
+            if (!fitsInGrid)
+            {
+                return;
+            }
+            bool occupiedByAir = grid.at(ny).at(nx)->type == ParticleType::AIR;
+            bool canPlace = occupiedByAir && fitsInGrid;
+            if (canPlace)
             {
 
                 Particle *curParticle = new Particle(prototype->type);

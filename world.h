@@ -61,6 +61,8 @@ public:
     }
 
     void render();
+    void tick();
+    void updateParticle(Particle *particle, int y, int x);
     void placeParticle(int y, int x, Particle *particle);
     void setBrushSize(int size);
 

@@ -1,7 +1,7 @@
 #include "world.h"
 #include <ncurses.h>
 
-// Render the World's grid
+// Render the World's grid.
 void World::render()
 {
     clear();
@@ -18,7 +18,7 @@ void World::render()
     refresh();
 }
 
-// Place a particle on the World's grid at the specified coordinates
+// Place a particle on the World's grid at the specified coordinates.
 void World::placeParticle(int y, int x, Particle *prototype)
 {
     int half = brushSize / 2;
@@ -47,9 +47,59 @@ void World::placeParticle(int y, int x, Particle *prototype)
     }
 }
 
-// Change the size of the brush
+// Change the size of the brush.
 void World::setBrushSize(int size)
 {
     int newSize = size - '0';
     brushSize = newSize;
+}
+
+void World::tick()
+{
+    // first pass thru grid to update particles
+    for (int y = 0; y < yDim; y++)
+    {
+        for (int x = 0; x < xDim; x++)
+        {
+            Particle *curParticle = grid.at(y).at(x);
+            updateParticle(curParticle, y, x);
+        }
+    }
+
+    // second pass thru grid to reset all particles update states
+    for (int y = 0; y < yDim; y++)
+    {
+        for (int x = 0; x < xDim; x++)
+        {
+            Particle *curParticle = grid.at(y).at(x);
+            curParticle->updated = false;
+        }
+    }
+}
+
+// Causes a particle update depending on its type and location on the grid.
+void World::updateParticle(Particle *particle, int y, int x)
+{
+    // Particle already updated this turn
+    if (particle->updated)
+    {
+        return;
+    }
+
+    if (particle->type == ParticleType::SAND)
+    {
+        if (y > 0)
+        {
+            int belowY = y + 1;
+            if (grid.at(belowY).at(x)->type == ParticleType::AIR)
+            {
+                delete grid.at(belowY).at(x);
+                grid.at(y + 1).at(x) = particle;
+                Particle *air = new Particle(ParticleType::AIR);
+                grid.at(y).at(x) = air;
+            }
+        }
+    }
+
+    particle->updated = true;
 }

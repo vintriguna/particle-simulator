@@ -14,6 +14,7 @@ class Particle
 
 public:
     char symbol;
+    bool updated;
     ParticleType type;
 
     Particle(ParticleType type)

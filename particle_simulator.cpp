@@ -59,6 +59,7 @@ int main()
             world->setBrushSize(ch);
             break;
         }
+        world->tick();
         world->render();
         usleep(10000);
     }

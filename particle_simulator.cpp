@@ -3,6 +3,7 @@
 #include "particle.h"
 #include "world.h"
 #include <ncurses.h>
+#include <vector>
 #include <unistd.h>
 
 void handleMouseClick(World *world)
@@ -18,7 +19,7 @@ void handleMouseClick(World *world)
 
         if ((event.bstate & BUTTON1_PRESSED) || (event.bstate & BUTTON1_CLICKED) || event.bstate & REPORT_MOUSE_POSITION)
         {
-            Particle *newParticle = new Particle(ParticleType::SAND);
+            Particle *newParticle = new Particle(world->getCurrentType());
             world->placeParticle(y, x, newParticle);
             delete newParticle;
         }
@@ -59,6 +60,9 @@ int main()
         case '3':
         case '4':
             world->setBrushSize(ch);
+            break;
+        case '\t':
+            world->rotateSelectedType();
             break;
         }
         world->tick();

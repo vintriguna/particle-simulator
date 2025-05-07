@@ -1,6 +1,7 @@
 #include "world.h"
 #include <ncurses.h>
 #include <cstdlib>
+#include <string>
 
 // Render the World's grid.
 void World::render()
@@ -19,6 +20,23 @@ void World::render()
         }
     }
     mvprintw(yDim + 2, 0, "BRUSH SIZE: %d", brushSize);
+    std::string particleStr;
+    switch (getCurrentType())
+    {
+    case ParticleType::AIR:
+        particleStr = "AIR";
+        break;
+    case ParticleType::WATER:
+        particleStr = "WATER";
+        break;
+    case ParticleType::SAND:
+        particleStr = "SAND";
+        break;
+    case ParticleType::WALL:
+        particleStr = "WALL";
+        break;
+    }
+    mvprintw(yDim + 2, xDim, "PARTICLE: %s", particleStr.c_str());
     refresh();
 }
 
@@ -36,7 +54,7 @@ void World::placeParticle(int y, int x, Particle *prototype)
             bool fitsInGrid = (nx >= 0 && nx < xDim) && (ny >= 0 && ny < yDim);
             if (!fitsInGrid)
             {
-                return;
+                continue;
             }
             bool occupiedByAir = grid.at(ny).at(nx)->type == ParticleType::AIR;
             bool canPlace = occupiedByAir && fitsInGrid;
@@ -49,6 +67,17 @@ void World::placeParticle(int y, int x, Particle *prototype)
             }
         }
     }
+}
+
+// Returns the current selected particle type.
+ParticleType World::getCurrentType()
+{
+    return (availableTypes[selectedParticleIdx]);
+}
+
+void World::rotateSelectedType()
+{
+    selectedParticleIdx = (selectedParticleIdx + 1) % availableTypes.size();
 }
 
 // Change the size of the brush.
@@ -91,11 +120,11 @@ bool World::canMoveTo(int destY, int destX)
     return true;
 }
 
-void World::swapWithAir(int srcY, int srcX, int destY, int destX)
+void World::swapWith(ParticleType type, int srcY, int srcX, int destY, int destX)
 {
     delete grid.at(destY).at(destX);
     grid.at(destY).at(destX) = grid.at(srcY).at(srcX);
-    grid.at(srcY).at(srcX) = new Particle(ParticleType::AIR);
+    grid.at(srcY).at(srcX) = new Particle(type);
 }
 
 // Causes a particle update depending on its type and location on the grid.
@@ -120,27 +149,27 @@ void World::updateParticle(Particle *particle, int y, int x)
             bool canGoDown = grid.at(belowY).at(x)->type == ParticleType::AIR;
             if (canGoDown)
             {
-                swapWithAir(y, x, belowY, x);
+                swapWith(ParticleType::AIR, y, x, belowY, x);
             }
             else if (canGoDiagonalLeft && canGoDiagonalRight)
             {
                 int leftOrRight = rand() % 2;
                 if (leftOrRight == 0)
                 {
-                    swapWithAir(y, x, belowY, leftX);
+                    swapWith(ParticleType::AIR, y, x, belowY, leftX);
                 }
                 else
                 {
-                    swapWithAir(y, x, belowY, rightX);
+                    swapWith(ParticleType::AIR, y, x, belowY, rightX);
                 }
             }
             else if (canGoDiagonalLeft)
             {
-                swapWithAir(y, x, belowY, leftX);
+                swapWith(ParticleType::AIR, y, x, belowY, leftX);
             }
             else if (canGoDiagonalRight)
             {
-                swapWithAir(y, x, belowY, rightX);
+                swapWith(ParticleType::AIR, y, x, belowY, rightX);
             }
         }
     }

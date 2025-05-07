@@ -12,6 +12,8 @@ public:
     int xDim;
     int yDim;
     int brushSize;
+    int selectedParticleIdx;
+    std::vector<ParticleType> availableTypes;
     std::vector<std::vector<Particle *>> grid;
 
     World(int xDim, int yDim)
@@ -19,6 +21,9 @@ public:
         this->xDim = xDim;
         this->yDim = yDim;
         this->brushSize = 1;
+        this->selectedParticleIdx = 0;
+        this->availableTypes = {ParticleType::SAND,
+                                ParticleType::WATER};
 
         // fill grid with air particles
         for (int i = 0; i < yDim; i++)
@@ -66,7 +71,9 @@ public:
     void placeParticle(int y, int x, Particle *particle);
     void setBrushSize(int size);
     bool canMoveTo(int destY, int destX);
-    void swapWithAir(int srcY, int srcX, int destY, int destX);
+    void swapWith(ParticleType type, int srcY, int srcX, int destY, int destX);
+    void rotateSelectedType();
+    ParticleType getCurrentType();
 
     ~World()
     {

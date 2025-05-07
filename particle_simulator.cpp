@@ -18,8 +18,7 @@ void handleMouseClick(World *world)
 
         if ((event.bstate & BUTTON1_PRESSED) || (event.bstate & BUTTON1_CLICKED))
         {
-            Particle *newParticle = new Particle();
-            newParticle->symbol = '*';
+            Particle *newParticle = new Particle(ParticleType::SAND);
             world->placeParticle(y, x, newParticle);
             delete newParticle;
         }
@@ -29,13 +28,14 @@ void handleMouseClick(World *world)
 int main()
 {
 
-    World *world = new World(100, 25);
+    World *world = new World(78, 22);
 
     initscr();
     noecho();
     curs_set(FALSE);
     keypad(stdscr, TRUE);
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
+    mouseinterval(0);
 
     world->render();
     bool keepGoing = true;

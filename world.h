@@ -65,6 +65,8 @@ public:
     void updateParticle(Particle *particle, int y, int x);
     void placeParticle(int y, int x, Particle *particle);
     void setBrushSize(int size);
+    bool canMoveTo(int destY, int destX);
+    void swapWithAir(int srcY, int srcX, int destY, int destX);
 
     ~World()
     {

@@ -1,5 +1,6 @@
 #include "world.h"
 #include <ncurses.h>
+#include <cstdlib>
 
 // Render the World's grid.
 void World::render()
@@ -10,8 +11,11 @@ void World::render()
         for (int x = 0; x < xDim; x++)
         {
             char curSymbol = grid.at(y).at(x)->symbol;
+            int colorPair = grid.at(y).at(x)->getColorPair();
+            attron(COLOR_PAIR(colorPair));
             move(y, x);
             printw("%c", curSymbol);
+            attroff(COLOR_PAIR(colorPair));
         }
     }
     mvprintw(yDim + 2, 0, "BRUSH SIZE: %d", brushSize);
@@ -77,6 +81,23 @@ void World::tick()
     }
 }
 
+bool World::canMoveTo(int destY, int destX)
+{
+
+    if ((destY < 0 || destY >= yDim) || (destX < 0 || destX >= xDim))
+    {
+        return false;
+    }
+    return true;
+}
+
+void World::swapWithAir(int srcY, int srcX, int destY, int destX)
+{
+    delete grid.at(destY).at(destX);
+    grid.at(destY).at(destX) = grid.at(srcY).at(srcX);
+    grid.at(srcY).at(srcX) = new Particle(ParticleType::AIR);
+}
+
 // Causes a particle update depending on its type and location on the grid.
 void World::updateParticle(Particle *particle, int y, int x)
 {
@@ -86,20 +107,42 @@ void World::updateParticle(Particle *particle, int y, int x)
         return;
     }
 
+    // deal with sand particle
     if (particle->type == ParticleType::SAND)
     {
-        if (y > 0)
+        int belowY = y + 1;
+        if (belowY < yDim)
         {
-            int belowY = y + 1;
-            if (grid.at(belowY).at(x)->type == ParticleType::AIR)
+            int leftX = x - 1;
+            int rightX = x + 1;
+            bool canGoDiagonalLeft = (leftX >= 0) && grid.at(belowY).at(leftX)->type == ParticleType::AIR;
+            bool canGoDiagonalRight = (rightX < xDim) && grid.at(belowY).at(rightX)->type == ParticleType::AIR;
+            bool canGoDown = grid.at(belowY).at(x)->type == ParticleType::AIR;
+            if (canGoDown)
             {
-                delete grid.at(belowY).at(x);
-                grid.at(y + 1).at(x) = particle;
-                Particle *air = new Particle(ParticleType::AIR);
-                grid.at(y).at(x) = air;
+                swapWithAir(y, x, belowY, x);
+            }
+            else if (canGoDiagonalLeft && canGoDiagonalRight)
+            {
+                int leftOrRight = rand() % 2;
+                if (leftOrRight == 0)
+                {
+                    swapWithAir(y, x, belowY, leftX);
+                }
+                else
+                {
+                    swapWithAir(y, x, belowY, rightX);
+                }
+            }
+            else if (canGoDiagonalLeft)
+            {
+                swapWithAir(y, x, belowY, leftX);
+            }
+            else if (canGoDiagonalRight)
+            {
+                swapWithAir(y, x, belowY, rightX);
             }
         }
     }
-
     particle->updated = true;
 }

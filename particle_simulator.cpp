@@ -16,7 +16,7 @@ void handleMouseClick(World *world)
         int x = event.x;
         int y = event.y;
 
-        if ((event.bstate & BUTTON1_PRESSED) || (event.bstate & BUTTON1_CLICKED))
+        if ((event.bstate & BUTTON1_PRESSED) || (event.bstate & BUTTON1_CLICKED) || event.bstate & REPORT_MOUSE_POSITION)
         {
             Particle *newParticle = new Particle(ParticleType::SAND);
             world->placeParticle(y, x, newParticle);
@@ -27,15 +27,17 @@ void handleMouseClick(World *world)
 
 int main()
 {
-
-    World *world = new World(78, 22);
-
+    srand(time(0));
+    World *world = new World(100, 30);
     initscr();
     noecho();
     curs_set(FALSE);
     keypad(stdscr, TRUE);
+    nodelay(stdscr, TRUE);
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
     mouseinterval(0);
+    start_color();
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK); // Sand
 
     world->render();
     bool keepGoing = true;
@@ -61,7 +63,7 @@ int main()
         }
         world->tick();
         world->render();
-        usleep(10000);
+        usleep(50000);
     }
 
     endwin();

@@ -35,6 +35,8 @@ public:
             break;
         }
     }
+
+    int getColorPair();
 };
 
 #endif

@@ -35,6 +35,9 @@ void World::render()
     case ParticleType::WALL:
         particleStr = "WALL";
         break;
+    default:
+        particleStr = "??";
+        break;
     }
     mvprintw(yDim + 2, xDim, "PARTICLE: %s", particleStr.c_str());
     refresh();
@@ -110,7 +113,7 @@ void World::tick()
     }
 }
 
-bool World::canMoveTo(int destY, int destX)
+bool World::inGrid(int destY, int destX)
 {
 
     if ((destY < 0 || destY >= yDim) || (destX < 0 || destX >= xDim))
@@ -118,6 +121,22 @@ bool World::canMoveTo(int destY, int destX)
         return false;
     }
     return true;
+}
+
+bool World::isAir(int destY, int destX)
+{
+    if (inGrid(destY, destX) && (grid.at(destY).at(destX)->type == ParticleType::AIR))
+    {
+        return true;
+    }
+    return false;
+}
+
+void World::swapParticle(int srcY, int srcX, int destY, int destX)
+{
+    Particle *temp = grid.at(srcY).at(srcX);
+    grid.at(srcY).at(srcX) = grid.at(destY).at(destX);
+    grid.at(destY).at(destX) = temp;
 }
 
 void World::swapWith(ParticleType type, int srcY, int srcX, int destY, int destX)
@@ -136,17 +155,55 @@ void World::updateParticle(Particle *particle, int y, int x)
         return;
     }
 
+    int belowY = y + 1;
+    int leftX = x - 1;
+    int rightX = x + 1;
+
     // deal with sand particle
     if (particle->type == ParticleType::SAND)
     {
-        int belowY = y + 1;
         if (belowY < yDim)
         {
-            int leftX = x - 1;
-            int rightX = x + 1;
-            bool canGoDiagonalLeft = (leftX >= 0) && grid.at(belowY).at(leftX)->type == ParticleType::AIR;
-            bool canGoDiagonalRight = (rightX < xDim) && grid.at(belowY).at(rightX)->type == ParticleType::AIR;
-            bool canGoDown = grid.at(belowY).at(x)->type == ParticleType::AIR;
+            bool canGoDiagonalLeft = (leftX >= 0) && grid.at(belowY).at(leftX)->type == ParticleType::AIR || (leftX >= 0) && grid.at(belowY).at(leftX)->type == ParticleType::WATER;
+            bool canGoDiagonalRight = (rightX < xDim) && grid.at(belowY).at(rightX)->type == ParticleType::AIR || (rightX < xDim) && grid.at(belowY).at(rightX)->type == ParticleType::WATER;
+            bool canGoDown = grid.at(belowY).at(x)->type == ParticleType::AIR || grid.at(belowY).at(x)->type == ParticleType::WATER;
+            if (canGoDown)
+            {
+                swapParticle(y, x, belowY, x);
+            }
+            else if (canGoDiagonalLeft && canGoDiagonalRight)
+            {
+                int leftOrRight = rand() % 2;
+                if (leftOrRight == 0)
+                {
+                    swapParticle(y, x, belowY, leftX);
+                }
+                else
+                {
+                    swapParticle(y, x, belowY, rightX);
+                }
+            }
+            else if (canGoDiagonalLeft)
+            {
+                swapParticle(y, x, belowY, leftX);
+            }
+            else if (canGoDiagonalRight)
+            {
+                swapParticle(y, x, belowY, rightX);
+            }
+        }
+    }
+    // deal with water particle
+    else if (particle->type == ParticleType::WATER)
+    {
+        bool canGoDown = isAir(belowY, x);
+        bool canGoLeft = isAir(y, leftX);
+        bool canGoRight = isAir(y, rightX);
+        bool canGoDiagonalLeft = isAir(belowY, leftX);
+        bool canGoDiagonalRight = isAir(belowY, rightX);
+
+        if (inGrid(y, x))
+        {
             if (canGoDown)
             {
                 swapWith(ParticleType::AIR, y, x, belowY, x);
@@ -170,6 +227,26 @@ void World::updateParticle(Particle *particle, int y, int x)
             else if (canGoDiagonalRight)
             {
                 swapWith(ParticleType::AIR, y, x, belowY, rightX);
+            }
+            else if (canGoLeft && canGoRight)
+            {
+                int leftOrRight = rand() % 2;
+                if (leftOrRight == 0)
+                {
+                    swapWith(ParticleType::AIR, y, x, y, leftX);
+                }
+                else
+                {
+                    swapWith(ParticleType::AIR, y, x, y, rightX);
+                }
+            }
+            else if (canGoLeft)
+            {
+                swapWith(ParticleType::AIR, y, x, y, leftX);
+            }
+            else if (canGoRight)
+            {
+                swapWith(ParticleType::AIR, y, x, y, rightX);
             }
         }
     }

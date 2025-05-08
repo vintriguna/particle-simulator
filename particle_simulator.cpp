@@ -39,6 +39,7 @@ int main()
     mouseinterval(0);
     start_color();
     init_pair(1, COLOR_YELLOW, COLOR_BLACK); // Sand
+    init_pair(2, COLOR_BLUE, COLOR_BLACK);   // Water
 
     world->render();
     bool keepGoing = true;

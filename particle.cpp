@@ -6,6 +6,8 @@ int Particle::getColorPair()
     {
     case ParticleType::SAND:
         return 1;
+    case ParticleType::WATER:
+        return 2;
     default:
         return 0;
     }

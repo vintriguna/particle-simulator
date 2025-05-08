@@ -35,7 +35,7 @@ public:
             symbol = '#';
             break;
         case ParticleType::WATER:
-            symbol = '&';
+            symbol = '~';
             break;
         }
     }

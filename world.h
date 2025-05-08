@@ -70,10 +70,12 @@ public:
     void updateParticle(Particle *particle, int y, int x);
     void placeParticle(int y, int x, Particle *particle);
     void setBrushSize(int size);
-    bool canMoveTo(int destY, int destX);
+    bool inGrid(int destY, int destX);
+    bool isAir(int destY, int destX);
     void swapWith(ParticleType type, int srcY, int srcX, int destY, int destX);
     void rotateSelectedType();
     ParticleType getCurrentType();
+    void swapParticle(int srcY, int srcX, int destY, int destX);
 
     ~World()
     {

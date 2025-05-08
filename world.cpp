@@ -20,27 +20,57 @@ void World::render()
         }
     }
     mvprintw(yDim + 2, 0, "BRUSH SIZE: %d", brushSize);
-    std::string particleStr;
-    switch (getCurrentType())
+    if (eraserEnabled)
     {
-    case ParticleType::AIR:
-        particleStr = "AIR";
-        break;
-    case ParticleType::WATER:
-        particleStr = "WATER";
-        break;
-    case ParticleType::SAND:
-        particleStr = "SAND";
-        break;
-    case ParticleType::WALL:
-        particleStr = "WALL";
-        break;
-    default:
-        particleStr = "??";
-        break;
+        mvprintw(yDim + 2, xDim - 14, "ERASER ENABLED");
     }
-    mvprintw(yDim + 2, xDim, "PARTICLE: %s", particleStr.c_str());
+    else
+    {
+        std::string particleStr;
+        switch (getCurrentType())
+        {
+        case ParticleType::AIR:
+            particleStr = "AIR";
+            break;
+        case ParticleType::WATER:
+            particleStr = "WATER";
+            break;
+        case ParticleType::SAND:
+            particleStr = "SAND";
+            break;
+        case ParticleType::WALL:
+            particleStr = "WALL";
+            break;
+        default:
+            particleStr = "??";
+            break;
+        }
+        mvprintw(yDim + 2, xDim - 14, "PARTICLE: %s", particleStr.c_str());
+    }
     refresh();
+}
+
+void World::eraseParticle(int y, int x)
+{
+
+    int half = brushSize / 2;
+    for (int i = -half; i <= half; i++)
+    {
+        for (int j = -half; j <= half; j++)
+        {
+
+            int ny = y + i;
+            int nx = x + j;
+            bool fitsInGrid = (nx >= 0 && nx < xDim) && (ny >= 0 && ny < yDim);
+            if ((!fitsInGrid) || grid.at(ny).at(nx)->type == ParticleType::WALL)
+            {
+                continue;
+            }
+
+            delete grid.at(ny).at(nx);
+            grid.at(ny).at(nx) = new Particle(ParticleType::AIR);
+        }
+    }
 }
 
 // Place a particle on the World's grid at the specified coordinates.

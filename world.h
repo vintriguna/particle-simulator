@@ -13,6 +13,7 @@ public:
     int yDim;
     int brushSize;
     int selectedParticleIdx;
+    bool eraserEnabled;
     std::vector<ParticleType> availableTypes;
     std::vector<std::vector<Particle *>> grid;
 
@@ -24,6 +25,7 @@ public:
         this->selectedParticleIdx = 0;
         this->availableTypes = {ParticleType::SAND,
                                 ParticleType::WATER};
+        this->eraserEnabled = false;
 
         // fill grid with air particles
         for (int i = 0; i < yDim; i++)
@@ -76,6 +78,7 @@ public:
     void rotateSelectedType();
     ParticleType getCurrentType();
     void swapParticle(int srcY, int srcX, int destY, int destX);
+    void eraseParticle(int y, int x);
 
     ~World()
     {

@@ -19,9 +19,17 @@ void handleMouseClick(World *world)
 
         if ((event.bstate & BUTTON1_PRESSED) || (event.bstate & BUTTON1_CLICKED) || event.bstate & REPORT_MOUSE_POSITION)
         {
-            Particle *newParticle = new Particle(world->getCurrentType());
-            world->placeParticle(y, x, newParticle);
-            delete newParticle;
+
+            if (world->eraserEnabled)
+            {
+                world->eraseParticle(y, x);
+            }
+            else
+            {
+                Particle *newParticle = new Particle(world->getCurrentType());
+                world->placeParticle(y, x, newParticle);
+                delete newParticle;
+            }
         }
     }
 }
@@ -64,6 +72,9 @@ int main()
             break;
         case '\t':
             world->rotateSelectedType();
+            break;
+        case 'c':
+            world->eraserEnabled = !(world->eraserEnabled);
             break;
         }
         world->tick();

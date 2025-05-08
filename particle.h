@@ -39,7 +39,7 @@ public:
             symbol = '~';
             break;
         case ParticleType::STONE:
-            symbol = 'x';
+            symbol = '0';
         }
     }
 

@@ -294,11 +294,9 @@ void World::updateParticle(Particle *particle, int y, int x)
     }
     else if (particle->type == ParticleType::STONE)
     {
-
-        // char waterChars[] = {'~', '.', ':', '`'};
-        //     int n = sizeof(waterChars) / sizeof(waterChars[0]);
-        //     int idx = (x + y + frameCount / 10) % n;
-        //     particle->symbol = waterChars[idx];
+        char stoneChars[] = {'0', 'O', '%'};
+        int idx = (x + y) % (sizeof(stoneChars) / sizeof(stoneChars[0]));
+        particle->symbol = stoneChars[idx];
     }
     particle->updated = true;
 }

@@ -46,9 +46,9 @@ int main()
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
     mouseinterval(0);
     start_color();
-    init_pair(1, COLOR_YELLOW, COLOR_BLACK); // Sand
-    init_pair(2, COLOR_CYAN, COLOR_BLACK);   // Water
-    init_pair(3, COLOR_RED, COLOR_BLACK);    // Stone
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK);  // Sand
+    init_pair(2, COLOR_CYAN, COLOR_BLACK);    // Water
+    init_pair(3, COLOR_MAGENTA, COLOR_BLACK); // Stone
 
     world->render();
     bool keepGoing = true;

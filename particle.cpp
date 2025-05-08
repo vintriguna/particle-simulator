@@ -8,6 +8,8 @@ int Particle::getColorPair()
         return 1;
     case ParticleType::WATER:
         return 2;
+    case ParticleType::STONE:
+        return 3;
     default:
         return 0;
     }

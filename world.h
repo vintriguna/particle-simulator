@@ -14,6 +14,7 @@ public:
     int brushSize;
     int selectedParticleIdx;
     bool eraserEnabled;
+    int frameCount;
     std::vector<ParticleType> availableTypes;
     std::vector<std::vector<Particle *>> grid;
 
@@ -24,8 +25,10 @@ public:
         this->brushSize = 1;
         this->selectedParticleIdx = 0;
         this->availableTypes = {ParticleType::SAND,
-                                ParticleType::WATER};
+                                ParticleType::WATER,
+                                ParticleType::STONE};
         this->eraserEnabled = false;
+        this->frameCount = 0;
 
         // fill grid with air particles
         for (int i = 0; i < yDim; i++)

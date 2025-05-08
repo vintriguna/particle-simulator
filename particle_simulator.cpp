@@ -47,7 +47,8 @@ int main()
     mouseinterval(0);
     start_color();
     init_pair(1, COLOR_YELLOW, COLOR_BLACK); // Sand
-    init_pair(2, COLOR_BLUE, COLOR_BLACK);   // Water
+    init_pair(2, COLOR_CYAN, COLOR_BLACK);   // Water
+    init_pair(3, COLOR_RED, COLOR_BLACK);    // Stone
 
     world->render();
     bool keepGoing = true;
@@ -79,6 +80,7 @@ int main()
         }
         world->tick();
         world->render();
+        world->frameCount = world->frameCount + 1;
         usleep(50000);
     }
 

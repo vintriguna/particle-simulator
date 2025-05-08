@@ -7,7 +7,8 @@ enum class ParticleType
     AIR,
     SAND,
     WALL,
-    WATER
+    WATER,
+    STONE
 };
 
 class Particle
@@ -37,6 +38,8 @@ public:
         case ParticleType::WATER:
             symbol = '~';
             break;
+        case ParticleType::STONE:
+            symbol = 'x';
         }
     }
 

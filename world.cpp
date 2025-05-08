@@ -41,6 +41,9 @@ void World::render()
         case ParticleType::WALL:
             particleStr = "WALL";
             break;
+        case ParticleType::STONE:
+            particleStr = "STONE";
+            break;
         default:
             particleStr = "??";
             break;
@@ -222,6 +225,10 @@ void World::updateParticle(Particle *particle, int y, int x)
                 swapParticle(y, x, belowY, rightX);
             }
         }
+
+        char sandChars[] = {'*', '.', '`'};
+        int idx = (x + y) % (sizeof(sandChars) / sizeof(sandChars[0]));
+        particle->symbol = sandChars[idx];
     }
     // deal with water particle
     else if (particle->type == ParticleType::WATER)
@@ -278,7 +285,20 @@ void World::updateParticle(Particle *particle, int y, int x)
             {
                 swapWith(ParticleType::AIR, y, x, y, rightX);
             }
+
+            char waterChars[] = {'~', '.', ':', '`'};
+            int n = sizeof(waterChars) / sizeof(waterChars[0]);
+            int idx = (x + y + frameCount / 10) % n;
+            particle->symbol = waterChars[idx];
         }
+    }
+    else if (particle->type == ParticleType::STONE)
+    {
+
+        // char waterChars[] = {'~', '.', ':', '`'};
+        //     int n = sizeof(waterChars) / sizeof(waterChars[0]);
+        //     int idx = (x + y + frameCount / 10) % n;
+        //     particle->symbol = waterChars[idx];
     }
     particle->updated = true;
 }

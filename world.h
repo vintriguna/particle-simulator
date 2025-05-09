@@ -14,6 +14,7 @@ public:
     int brushSize;
     int selectedParticleIdx;
     bool eraserEnabled;
+    bool instructionMode;
     int frameCount;
     std::vector<ParticleType> availableTypes;
     std::vector<std::vector<Particle *>> grid;
@@ -29,6 +30,7 @@ public:
                                 ParticleType::STONE};
         this->eraserEnabled = false;
         this->frameCount = 0;
+        this->instructionMode = false;
 
         // fill grid with air particles
         for (int i = 0; i < yDim; i++)

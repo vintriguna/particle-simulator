@@ -7,6 +7,22 @@
 void World::render()
 {
     clear();
+
+    if (instructionMode)
+    {
+
+        std::string instructions = "Place particles by left-clicking the mouse within the boundary.\n \n"
+                                   "You can alternate the particles you place by pressing TAB. To switch "
+                                   "between the eraser and particles press 'c'. \n \nTo change brush sizes,"
+                                   "press '1', '2', '3', or '4'. A higher number indicates a larger brush.\n \n"
+                                   "You can select the SAND, WATER, and STONE particles, all of which have "
+                                   "different properties. \n \n \n \n"
+                                   "To exit this menu press 'i'. \n";
+        mvprintw(0, 0, "%s", instructions.c_str());
+        refresh();
+        return;
+    }
+
     for (int y = 0; y < yDim; y++)
     {
         for (int x = 0; x < xDim; x++)
@@ -19,7 +35,6 @@ void World::render()
             attroff(COLOR_PAIR(colorPair));
         }
     }
-    mvprintw(yDim + 2, 0, "BRUSH SIZE: %d", brushSize);
     if (eraserEnabled)
     {
         mvprintw(yDim + 2, xDim - 14, "ERASER ENABLED");
@@ -50,6 +65,9 @@ void World::render()
         }
         mvprintw(yDim + 2, xDim - 14, "PARTICLE: %s", particleStr.c_str());
     }
+    mvprintw(yDim + 2, 0, "BRUSH SIZE: %d", brushSize);
+    mvprintw(yDim + 4, xDim - 18, "%s", "Press 'i' for help");
+    mvprintw(yDim + 5, xDim - 18, "%s", "Press 'q' to quit");
     refresh();
 }
 

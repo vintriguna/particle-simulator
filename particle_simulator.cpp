@@ -77,6 +77,8 @@ int main()
         case 'c':
             world->eraserEnabled = !(world->eraserEnabled);
             break;
+        case 'i':
+            world->instructionMode = !(world->instructionMode);
         }
         world->tick();
         world->render();
